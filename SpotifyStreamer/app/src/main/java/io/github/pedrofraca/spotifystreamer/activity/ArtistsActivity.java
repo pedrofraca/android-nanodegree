@@ -12,26 +12,27 @@ import java.util.ArrayList;
 
 import io.github.pedrofraca.spotifystreamer.R;
 import io.github.pedrofraca.spotifystreamer.asynctask.SearchArtistsAsyncTask;
-import io.github.pedrofraca.spotifystreamer.fragment.MainActivityFragment;
+import io.github.pedrofraca.spotifystreamer.fragment.ItemListFragment;
+import io.github.pedrofraca.spotifystreamer.listener.ItemListFragmentInterface;
 import io.github.pedrofraca.spotifystreamer.listener.SearchArtistInterface;
 import io.github.pedrofraca.spotifystreamer.model.ItemToDraw;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
 
-public class ArtistsActivity extends AppCompatActivity implements SearchArtistInterface {
+public class ArtistsActivity extends AppCompatActivity implements SearchArtistInterface,ItemListFragmentInterface {
 
     public static final String DATASET = "DATASET";
 
     protected ArrayList<ItemToDraw> mDataset = new ArrayList<ItemToDraw>();
-    protected MainActivityFragment mFragment;
+    protected ItemListFragment mFragment;
     SearchArtistsAsyncTask searchArtistsAsyncTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mFragment = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
+        mFragment = (ItemListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
         if(savedInstanceState==null){
             mFragment.showMessage(getString(R.string.start_message));
         }
@@ -45,7 +46,6 @@ public class ArtistsActivity extends AppCompatActivity implements SearchArtistIn
             mFragment.showMessage(getString(R.string.start_message));
         } else {
             mFragment.dataset(mDataset)
-                    .clickable(true)
                     .refresh();
         }
     }
@@ -62,6 +62,7 @@ public class ArtistsActivity extends AppCompatActivity implements SearchArtistIn
         if(searchArtistsAsyncTask==null){
             searchArtistsAsyncTask= new SearchArtistsAsyncTask();
         } else {
+            //Cancelling activity as we are going to start a new one.
             searchArtistsAsyncTask.cancel(true);
             searchArtistsAsyncTask= new SearchArtistsAsyncTask();
         }
@@ -103,13 +104,17 @@ public class ArtistsActivity extends AppCompatActivity implements SearchArtistIn
             mDataset.add(new ItemToDraw(artist.name, imgUrl, artist.id));
         }
         mFragment.dataset(mDataset)
-                .emtyDatasetMessage(getString(R.string.no_results,query))
-                .clickable(true)
+                .emtyDatasetMessage(getString(R.string.no_results, query))
                 .refresh();
     }
 
     @Override
     public void onSearchArtistError(Exception error) {
         mFragment.showMessage(error.getMessage());
+    }
+
+    @Override
+    public boolean allowClicksOnItems() {
+        return true;
     }
 }

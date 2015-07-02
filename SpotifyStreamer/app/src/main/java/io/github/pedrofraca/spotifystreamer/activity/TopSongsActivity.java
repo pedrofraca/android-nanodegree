@@ -18,7 +18,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class TopSongsActivity extends ArtistsActivity {
+public class TopSongsActivity extends ArtistsActivity  {
 
     public static final String ATTR_ARTIST_NAME = "ATTR_ARTIST_NAME";
     public static final String ATTR_ARTIST_ID = "ATTR_ARTIST_ID";
@@ -69,8 +69,7 @@ public class TopSongsActivity extends ArtistsActivity {
                     mDataset.add(new ItemToDraw(track.name,imgUrl,track.id,track.album.name));
                 }
                 mFragment.dataset(mDataset)
-                        .emtyDatasetMessage(getString(R.string.no_song_found,mArtistName))
-                        .clickable(false)
+                        .emtyDatasetMessage(getString(R.string.no_song_found, mArtistName))
                         .refresh();
             }
 
@@ -79,5 +78,10 @@ public class TopSongsActivity extends ArtistsActivity {
                mFragment.showMessage(error.getMessage());
             }
         });
+    }
+
+    @Override
+    public boolean allowClicksOnItems() {
+        return false;
     }
 }

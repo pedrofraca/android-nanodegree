@@ -24,9 +24,7 @@ public class SpotifyAdapter extends RecyclerView.Adapter<SpotifyAdapter.ViewHold
     private Context mContext;
     private boolean mClickable;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mSubTextView;
         public TextView mTextView;
@@ -76,8 +74,6 @@ public class SpotifyAdapter extends RecyclerView.Adapter<SpotifyAdapter.ViewHold
         }
     }
 
-
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataset.size();
