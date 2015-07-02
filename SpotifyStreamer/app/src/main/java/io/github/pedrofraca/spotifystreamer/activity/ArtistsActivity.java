@@ -117,4 +117,12 @@ public class ArtistsActivity extends AppCompatActivity implements SearchArtistIn
     public boolean allowClicksOnItems() {
         return true;
     }
+
+    @Override
+    protected void onDestroy() {
+        if(searchArtistsAsyncTask!=null){
+            searchArtistsAsyncTask.cancel(true);
+        }
+        super.onDestroy();
+    }
 }
