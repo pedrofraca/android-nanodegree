@@ -10,4 +10,6 @@
     <string name="no_song_found">"No songs found for %1$s"</string>
     <string name="start_message">Search for an artist by clicking on the search button on the bar.</string>
     <string name="player">Player</string>
+    <string name="share_with">Share with</string>
+    <string name="share_text">Listening song %1$s from %2$s on Spotify Streamer</string>
 </resources>

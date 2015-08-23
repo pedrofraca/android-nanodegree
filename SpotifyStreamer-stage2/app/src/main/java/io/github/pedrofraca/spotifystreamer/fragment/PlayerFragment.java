@@ -12,7 +12,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -33,14 +33,18 @@ public class PlayerFragment extends DialogFragment {
     private static final String SONG_ARTIST_NAME = "song_artist_name";
     private static final String SONG_ARTIST_POSITION = "song_artist_position";
 
+    private static final String ATTR_IS_PLAYING = "is_playing";
+
+
     private ImageView mSongArt;
     private TextView mArtistName;
     private TextView mAlbumName;
     private TextView mSongName;
     private SeekBar mSeekBar;
-    private Button mPlayButton;
-    private Button mNextButton;
-    private Button mPreviousButton;
+    private ImageButton mPlayButton;
+    private ImageButton mNextButton;
+    private ImageButton mPreviousButton;
+    private ImageButton mShareButton;
     private String mArtistNameString;
     private View mProgessBar;
     private boolean mPlaying;
@@ -60,9 +64,10 @@ public class PlayerFragment extends DialogFragment {
         mAlbumName = (TextView) rootView.findViewById(R.id.fragment_player_album_name);
         mSongName = (TextView) rootView.findViewById(R.id.fragment_player_song_name);
         mSeekBar = (SeekBar) rootView.findViewById(R.id.fragment_player_seek_bar);
-        mPlayButton = (Button) rootView.findViewById(R.id.fragment_player_play_button);
-        mNextButton = (Button) rootView.findViewById(R.id.fragment_player_next_button);
-        mPreviousButton = (Button) rootView.findViewById(R.id.fragment_player_previous_button);
+        mPlayButton = (ImageButton) rootView.findViewById(R.id.fragment_player_play_button);
+        mNextButton = (ImageButton) rootView.findViewById(R.id.fragment_player_next_button);
+        mPreviousButton = (ImageButton) rootView.findViewById(R.id.fragment_player_previous_button);
+        mShareButton = (ImageButton) rootView.findViewById(R.id.fragment_player_share_button);
         mProgessBar = rootView.findViewById(R.id.progress_bar_container);
 
         mSongs = getArguments().getParcelableArrayList(SONG_EXTRA);
@@ -100,19 +105,21 @@ public class PlayerFragment extends DialogFragment {
             }
         });
 
-        Intent serviceIntent = new Intent(getActivity(), PlayerService.class);
-        getActivity().bindService(serviceIntent, new ServiceConnection() {
+        mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                PlayerService.PlayerServiceBinder binder = (PlayerService.PlayerServiceBinder) iBinder;
-                mPlayerService = binder.getService();
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, getActivity().getString(R.string.share_text,
+                        mSongs.get(mCurrentSongPosition).getTitle(),
+                        mArtistNameString));
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, getActivity().getString(R.string.share_with)));
             }
+        });
 
-            @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-                mPlayerService = null;
-            }
-        }, Context.BIND_AUTO_CREATE);
+        Intent serviceIntent = new Intent(getActivity(), PlayerService.class);
+        getActivity().bindService(serviceIntent,serviceConnection, Context.BIND_AUTO_CREATE);
         getActivity().startService(serviceIntent);
 
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -145,33 +152,65 @@ public class PlayerFragment extends DialogFragment {
     }
 
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mPlaying=savedInstanceState.getBoolean(ATTR_IS_PLAYING);
+            updateUIDependingOfStatus();
+        }
+    }
+
+    ServiceConnection serviceConnection =  new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            PlayerService.PlayerServiceBinder binder = (PlayerService.PlayerServiceBinder) iBinder;
+            mPlayerService = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mPlayerService = null;
+        }
+    };
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(ATTR_IS_PLAYING,mPlaying);
+        super.onSaveInstanceState(outState);
+    }
+
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             mPlaying = intent.getExtras().getBoolean(PlayerService.PLAYING_ATTR);
             mStopped = intent.getExtras().getBoolean(PlayerService.STOP_ATTR);
             hideProgressBar();
-            if(mPlaying){
-                mPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
-                mTimer=new Timer();
-                mTimer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        mSeekBar.setProgress(mSeekBar.getProgress() + 1000);
-                    }
-                }, 0, 1000);//Update text every second
-            } else if (mStopped){
-                mSeekBar.setProgress(0);
-                mTimer.cancel();
-                mTimer.purge();
-                mPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
-            } else {
-                mTimer.cancel();
-                mTimer.purge();
-                mPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
-            }
+            updateUIDependingOfStatus();
         }
     };
+
+    private void updateUIDependingOfStatus() {
+        if(mPlaying){
+            mPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
+            mTimer=new Timer();
+            mTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mSeekBar.setProgress(mSeekBar.getProgress() + 1000);
+                }
+            }, 0, 1000);//Update text every second
+        } else if (mStopped){
+            mSeekBar.setProgress(0);
+            mTimer.cancel();
+            mTimer.purge();
+            mPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
+        } else {
+            mTimer.cancel();
+            mTimer.purge();
+            mPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
+        }
+    }
 
     @Override
     public void onResume() {
@@ -221,5 +260,11 @@ public class PlayerFragment extends DialogFragment {
         args.putInt(SONG_ARTIST_POSITION,songPosition);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onStop() {
+        getActivity().unbindService(serviceConnection);
+        super.onStop();
     }
 }

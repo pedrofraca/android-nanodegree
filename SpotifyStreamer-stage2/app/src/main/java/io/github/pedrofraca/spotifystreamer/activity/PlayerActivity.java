@@ -25,13 +25,14 @@ public class PlayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_player);
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-
-        ArrayList<ItemToDraw> songs = getIntent().getExtras().getParcelableArrayList(SONG_ATTR);
-        int songPosition = getIntent().getExtras().getInt(SONG_ATTR_POSITION);
-        String artistName = getIntent().getExtras().getString(ARTIST_NAME_ATTR);
-        PlayerFragment playerFragment = PlayerFragment.newInstance(songs,artistName,songPosition);
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.activity_player_fragment_container, playerFragment).commit();
+        if(savedInstanceState==null){
+            ArrayList<ItemToDraw> songs = getIntent().getExtras().getParcelableArrayList(SONG_ATTR);
+            int songPosition = getIntent().getExtras().getInt(SONG_ATTR_POSITION);
+            String artistName = getIntent().getExtras().getString(ARTIST_NAME_ATTR);
+            PlayerFragment playerFragment = PlayerFragment.newInstance(songs,artistName,songPosition);
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.activity_player_fragment_container, playerFragment).commit();
+        }
     }
 
     public static void launch(Activity context, ArrayList<ItemToDraw> items, String artistName, int songPosition) {

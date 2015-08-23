@@ -39,21 +39,26 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
-            <Button
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/fragment_player_previous_button"
                 android:background="@android:drawable/ic_media_previous"/>
-            <Button
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/fragment_player_play_button"
                 android:background="@android:drawable/ic_media_play"/>
-            <Button
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/fragment_player_next_button"
                 android:background="@android:drawable/ic_media_next"/>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_player_share_button"
+                android:background="@android:drawable/ic_menu_share"/>
         </LinearLayout>
     </LinearLayout>
     <RelativeLayout

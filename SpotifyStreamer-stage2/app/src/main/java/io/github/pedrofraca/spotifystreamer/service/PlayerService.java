@@ -25,13 +25,17 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     @Override
     public void onCreate() {
+        createMediaPlayer();
+        super.onCreate();
+    }
+
+    private void createMediaPlayer() {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mMediaPlayer.setWakeMode(getApplicationContext(),
                 PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnCompletionListener(this);
-        super.onCreate();
     }
 
     @Override
@@ -73,6 +77,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         try {
             if(mMediaPlayer.isPlaying()) {
                 mMediaPlayer.reset();
+                mMediaPlayer.release();
+                createMediaPlayer();
             }
             mMediaPlayer.setDataSource(songURL);
         } catch (IOException e) {
