@@ -11,5 +11,7 @@
     <string name="start_message">Search for an artist by clicking on the search button on the bar.</string>
     <string name="player">Player</string>
     <string name="share_with">Share with</string>
-    <string name="share_text">Listening song %1$s from %2$s on Spotify Streamer</string>
+    <string name="share_text">Listening song %1$s from %2$s on Spotify Streamerq`</string>
+    <string name="preview_song_time">0:30</string>
+    <string name="elapsed_time">0:00</string>
 </resources>

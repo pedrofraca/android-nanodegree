@@ -34,12 +34,15 @@ public class PlayerFragment extends DialogFragment {
     private static final String SONG_ARTIST_POSITION = "song_artist_position";
 
     private static final String ATTR_IS_PLAYING = "is_playing";
+    private static final String ATTR_ELAPSED_TIME = "elapsed_time";
+    private static final String START_SONG = "start_song";
 
 
     private ImageView mSongArt;
     private TextView mArtistName;
     private TextView mAlbumName;
     private TextView mSongName;
+    private TextView mElapsedTime;
     private SeekBar mSeekBar;
     private ImageButton mPlayButton;
     private ImageButton mNextButton;
@@ -53,6 +56,7 @@ public class PlayerFragment extends DialogFragment {
     private PlayerService mPlayerService;
     private Timer mTimer = new Timer();
     private boolean mStopped;
+    private boolean mStartSong = false;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -63,6 +67,7 @@ public class PlayerFragment extends DialogFragment {
         mArtistName = (TextView) rootView.findViewById(R.id.fragment_player_artist_name);
         mAlbumName = (TextView) rootView.findViewById(R.id.fragment_player_album_name);
         mSongName = (TextView) rootView.findViewById(R.id.fragment_player_song_name);
+        mElapsedTime =(TextView) rootView.findViewById(R.id.fragment_player_elapsed);
         mSeekBar = (SeekBar) rootView.findViewById(R.id.fragment_player_seek_bar);
         mPlayButton = (ImageButton) rootView.findViewById(R.id.fragment_player_play_button);
         mNextButton = (ImageButton) rootView.findViewById(R.id.fragment_player_next_button);
@@ -73,6 +78,7 @@ public class PlayerFragment extends DialogFragment {
         mSongs = getArguments().getParcelableArrayList(SONG_EXTRA);
         mCurrentSongPosition = getArguments().getInt(SONG_ARTIST_POSITION);
         mArtistNameString = getArguments().getString(SONG_ARTIST_NAME);
+        mStartSong = getArguments().getBoolean(START_SONG);
         applySongToUI(mSongs.get(mCurrentSongPosition));
 
         mPlayButton.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +100,8 @@ public class PlayerFragment extends DialogFragment {
             public void onClick(View view) {
                 mCurrentSongPosition++;
                 applySongToUI(mSongs.get(mCurrentSongPosition));
+                resetPlayerControls();
+                playCurrentSong();
             }
         });
 
@@ -102,6 +110,8 @@ public class PlayerFragment extends DialogFragment {
             public void onClick(View view) {
                 mCurrentSongPosition--;
                 applySongToUI(mSongs.get(mCurrentSongPosition));
+                resetPlayerControls();
+                playCurrentSong();
             }
         });
 
@@ -119,7 +129,7 @@ public class PlayerFragment extends DialogFragment {
         });
 
         Intent serviceIntent = new Intent(getActivity(), PlayerService.class);
-        getActivity().bindService(serviceIntent,serviceConnection, Context.BIND_AUTO_CREATE);
+        getActivity().bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
         getActivity().startService(serviceIntent);
 
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -140,6 +150,7 @@ public class PlayerFragment extends DialogFragment {
         });
 
         hideProgressBar();
+
         return rootView;
     }
 
@@ -157,7 +168,12 @@ public class PlayerFragment extends DialogFragment {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
             mPlaying=savedInstanceState.getBoolean(ATTR_IS_PLAYING);
+            mCurrentSongPosition=savedInstanceState.getInt(SONG_ARTIST_POSITION);
+            mSongs=savedInstanceState.getParcelableArrayList(SONG_EXTRA);
+            applySongToUI(mSongs.get(mCurrentSongPosition));
             updateUIDependingOfStatus();
+            mElapsedTime.setText(savedInstanceState.getString(ATTR_ELAPSED_TIME));
+            mStartSong=false;
         }
     }
 
@@ -166,6 +182,9 @@ public class PlayerFragment extends DialogFragment {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             PlayerService.PlayerServiceBinder binder = (PlayerService.PlayerServiceBinder) iBinder;
             mPlayerService = binder.getService();
+            if(mStartSong){
+                playCurrentSong();
+            }
         }
 
         @Override
@@ -177,6 +196,9 @@ public class PlayerFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(ATTR_IS_PLAYING,mPlaying);
+        outState.putInt(SONG_ARTIST_POSITION, mCurrentSongPosition);
+        outState.putParcelableArrayList(SONG_EXTRA,mSongs);
+        outState.putString(ATTR_ELAPSED_TIME,mElapsedTime.getText().toString());
         super.onSaveInstanceState(outState);
     }
 
@@ -197,15 +219,25 @@ public class PlayerFragment extends DialogFragment {
             mTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    if(getActivity()!=null){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mElapsedTime.setText(String.format("0:%02d", mSeekBar.getProgress() / 1000));
+                            }
+                        });
+                    }
+
                     mSeekBar.setProgress(mSeekBar.getProgress() + 1000);
                 }
             }, 0, 1000);//Update text every second
         } else if (mStopped){
+            mElapsedTime.setText(getString(R.string.elapsed_time));
             mSeekBar.setProgress(0);
             mTimer.cancel();
             mTimer.purge();
             mPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
-        } else {
+        } else { //Pause
             mTimer.cancel();
             mTimer.purge();
             mPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
@@ -237,12 +269,6 @@ public class PlayerFragment extends DialogFragment {
             mNextButton.setEnabled(false);
         }
 
-        if(mPlaying){
-            mTimer.cancel();
-            mTimer.purge();
-            mPlaying=false;
-        }
-
         mPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
         mArtistName.setText(mArtistNameString);
         mSongName.setText(song.getTitle());
@@ -252,12 +278,26 @@ public class PlayerFragment extends DialogFragment {
         mSeekBar.setProgress(0);
     }
 
+    private void playCurrentSong(){
+        showProgressBar();
+        mPlayerService.play(mSongs.get(mCurrentSongPosition).getSongURL());
+    }
+
+    private void resetPlayerControls(){
+        if(mPlaying){
+            mElapsedTime.setText(getString(R.string.elapsed_time));
+            mTimer.cancel();
+            mTimer.purge();
+            mPlaying=false;
+        }
+    }
     public static PlayerFragment newInstance(ArrayList<ItemToDraw> songs , String artistName, int songPosition) {
         PlayerFragment fragment = new PlayerFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(SONG_EXTRA, songs);
         args.putString(SONG_ARTIST_NAME, artistName);
-        args.putInt(SONG_ARTIST_POSITION,songPosition);
+        args.putInt(SONG_ARTIST_POSITION, songPosition);
+        args.putBoolean(START_SONG,true);
         fragment.setArguments(args);
         return fragment;
     }

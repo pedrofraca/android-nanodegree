@@ -33,6 +33,24 @@
             android:layout_width="match_parent"
             android:id="@+id/fragment_player_seek_bar"
             android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/elapsed_time"
+            android:id="@+id/fragment_player_elapsed"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:id="@+id/fragment_player_total"
+            android:text="@string/preview_song_time"/>
+    </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

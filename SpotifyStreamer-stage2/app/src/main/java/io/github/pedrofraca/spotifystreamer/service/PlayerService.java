@@ -19,6 +19,9 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public static final String PAUSE_ATTR = "player_service_pause";
     public static final String STOP_ATTR = "player_service_stop";
     public static final String DURATION_ATTR = "player_service_duration";
+
+    public static String currentSongDataSource="";
+
     private MediaPlayer mMediaPlayer;
 
     private final IBinder playerServiceBinder = new PlayerServiceBinder();
@@ -76,11 +79,17 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void play(String songURL) {
         try {
             if(mMediaPlayer.isPlaying()) {
+                mMediaPlayer.stop();
+            }
+            if(songURL.equals(currentSongDataSource)){
+                mMediaPlayer.start();
+                sendPlayBroadcast();
+                return;
+            } else {
                 mMediaPlayer.reset();
-                mMediaPlayer.release();
-                createMediaPlayer();
             }
             mMediaPlayer.setDataSource(songURL);
+            currentSongDataSource=songURL;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,6 +100,10 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void pause() {
         mMediaPlayer.pause();
         sendPauseBroadcast();
+    }
+
+    public boolean songStarted(){
+        return !currentSongDataSource.equals("");
     }
 
     public void seek(int where){
