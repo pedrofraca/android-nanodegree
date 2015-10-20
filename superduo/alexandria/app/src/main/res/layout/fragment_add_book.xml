@@ -40,13 +40,26 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bookTitle"
+            android:id="@+id/errorMessage"
             android:textSize="@dimen/head_line"
             android:textIsSelectable="true"
             android:textStyle="bold"
             android:layout_marginTop="25dp"
             android:paddingRight="20dp"
             android:layout_below="@+id/eancontainer"
+            android:layout_alignLeft="@+id/eancontainer"
+            android:layout_alignStart="@+id/eancontainer"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bookTitle"
+            android:textSize="@dimen/head_line"
+            android:textIsSelectable="true"
+            android:textStyle="bold"
+            android:layout_marginTop="25dp"
+            android:paddingRight="20dp"
+            android:layout_below="@+id/errorMessage"
             android:layout_alignLeft="@+id/eancontainer"
             android:layout_alignStart="@+id/eancontainer"/>
 

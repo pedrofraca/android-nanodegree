@@ -30,17 +30,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-
-
+        <activity android:name=".barcode.BarcodeCaptureActivity"></activity>
 
         <provider
             android:name=".data.BookProvider"
             android:authorities="it.jaschke.alexandria"
             android:exported="false" />
-        <service
-            android:name=".services.BookService"
-            android:exported="false" >
-        </service>
     </application>
 
 </manifest>

@@ -1,10 +1,7 @@
 package it.jaschke.alexandria;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +17,19 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.gms.vision.barcode.Barcode;
+
+import it.jaschke.alexandria.barcode.BarcodeCaptureActivity;
 import it.jaschke.alexandria.data.AlexandriaContract;
-import it.jaschke.alexandria.services.BookService;
+import it.jaschke.alexandria.data.BookProviderHelper;
+import it.jaschke.alexandria.services.BookServiceListener;
 import it.jaschke.alexandria.services.DownloadImage;
+import it.jaschke.alexandria.services.GetVolumeInfo;
+import it.jaschke.alexandria.services.model.VolumeInfo;
 
 
-public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, BookServiceListener{
     private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
     private EditText ean;
     private final int LOADER_ID = 1;
@@ -35,9 +38,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private static final String SCAN_FORMAT = "scanFormat";
     private static final String SCAN_CONTENTS = "scanContents";
 
+    private static final int BARCODE_REQUEST_CODE=23;
+
     private String mScanFormat = "Format:";
     private String mScanContents = "Contents:";
-
+    private TextView mErrorMessage;
 
 
     public AddBook(){
@@ -52,11 +57,23 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode==Activity.RESULT_OK) {
+            if(requestCode==BARCODE_REQUEST_CODE){
+                Barcode theBarcode = data.getParcelableExtra(BarcodeCaptureActivity.BARCODE);
+                ean.setText(theBarcode.rawValue);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ean = (EditText) rootView.findViewById(R.id.ean);
-
+        mErrorMessage = (TextView) rootView.findViewById(R.id.errorMessage);
         ean.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -79,11 +96,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     clearFields();
                     return;
                 }
-                //Once we have an ISBN, start a book intent
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean);
-                bookIntent.setAction(BookService.FETCH_BOOK);
-                getActivity().startService(bookIntent);
+                BookProviderHelper bookProviderHelper = new BookProviderHelper();
+                if(!bookProviderHelper.bookAlreadyOnDB(getActivity().getContentResolver(),ean)){
+                    new GetVolumeInfo(AddBook.this,ean).execute();
+                }
+
                 AddBook.this.restartLoader();
             }
         });
@@ -91,19 +108,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView.findViewById(R.id.scan_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // This is the callback method that the system will invoke when your button is
-                // clicked. You might do this by launching another app or by including the
-                //functionality directly in this app.
-                // Hint: Use a Try/Catch block to handle the Intent dispatch gracefully, if you
-                // are using an external app.
-                //when you're done, remove the toast below.
-                Context context = getActivity();
-                CharSequence text = "This button should let you scan a book for its barcode!";
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
-
+                Intent barcodeCaptureActivtyIntent = new Intent(getActivity(),BarcodeCaptureActivity.class);
+                barcodeCaptureActivtyIntent.putExtra(BarcodeCaptureActivity.AutoFocus,true);
+                startActivityForResult(barcodeCaptureActivtyIntent,BARCODE_REQUEST_CODE);
             }
         });
 
@@ -117,10 +124,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean.getText().toString());
-                bookIntent.setAction(BookService.DELETE_BOOK);
-                getActivity().startService(bookIntent);
+                BookProviderHelper helper = new BookProviderHelper();
+                helper.deleteBook(getActivity().getContentResolver(), ean.getText().toString());
                 ean.setText("");
             }
         });
@@ -135,33 +140,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     private void restartLoader(){
         getLoaderManager().restartLoader(LOADER_ID, null, this);
-    }
-
-    BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getIntExtra(BookService.BOOK_SERVICE_ERROR)){
-                if(!Utility.isNetworAvailable(context)){
-                    Toast toast = Toast.makeText(context,
-                            context.getResources().getString(R.string.book_api_error),
-                            Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-
-            }
-        }
-    };
-
-    @Override
-    public void onResume() {
-        getActivity().registerReceiver(receiver, new IntentFilter(BookService.BOOK_SERVICE_ACTION));
-        super.onResume();
-    }
-
-    @Override
-    public void onDetach() {
-        getActivity().unregisterReceiver(receiver);
-        super.onDetach();
     }
 
     @Override
@@ -231,5 +209,23 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         activity.setTitle(R.string.scan);
+    }
+
+    @Override
+    public void onBookFound(String ean, VolumeInfo info) {
+        BookProviderHelper bookProviderHelper = new BookProviderHelper();
+        bookProviderHelper.writeBackBook(getActivity().getContentResolver(),
+                ean,
+                info);
+        Log.d("BOok", info.title());
+    }
+
+    @Override
+    public void onBookFoundError(Exception e) {
+        setErrorMessage(e.getMessage());
+    }
+
+    public void setErrorMessage(String message){
+        mErrorMessage.setText(message);
     }
 }
