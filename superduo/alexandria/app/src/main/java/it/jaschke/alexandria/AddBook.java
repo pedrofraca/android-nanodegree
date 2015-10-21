@@ -8,8 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +17,15 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.vision.barcode.Barcode;
+import com.squareup.picasso.Picasso;
 
 import it.jaschke.alexandria.barcode.BarcodeCaptureActivity;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.data.BookProviderHelper;
 import it.jaschke.alexandria.services.BookServiceListener;
-import it.jaschke.alexandria.services.DownloadImage;
 import it.jaschke.alexandria.services.GetVolumeInfo;
 import it.jaschke.alexandria.services.model.VolumeInfo;
 
@@ -35,17 +36,22 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private final int LOADER_ID = 1;
     private View rootView;
     private final String EAN_CONTENT="eanContent";
-    private static final String SCAN_FORMAT = "scanFormat";
-    private static final String SCAN_CONTENTS = "scanContents";
 
     private static final int BARCODE_REQUEST_CODE=23;
 
-    private String mScanFormat = "Format:";
-    private String mScanContents = "Contents:";
     private TextView mErrorMessage;
+    private View mProgressBarView;
 
 
     public AddBook(){
+    }
+
+    public void showProgressBar(){
+        mProgressBarView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgressBar(){
+        mProgressBarView.setVisibility(View.GONE);
     }
 
     @Override
@@ -74,6 +80,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ean = (EditText) rootView.findViewById(R.id.ean);
         mErrorMessage = (TextView) rootView.findViewById(R.id.errorMessage);
+        mProgressBarView = rootView.findViewById(R.id.progress_bar);
         ean.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -99,6 +106,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 BookProviderHelper bookProviderHelper = new BookProviderHelper();
                 if(!bookProviderHelper.bookAlreadyOnDB(getActivity().getContentResolver(),ean)){
                     new GetVolumeInfo(AddBook.this,ean).execute();
+                    showProgressBar();
                 }
 
                 AddBook.this.restartLoader();
@@ -109,8 +117,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             @Override
             public void onClick(View v) {
                 Intent barcodeCaptureActivtyIntent = new Intent(getActivity(),BarcodeCaptureActivity.class);
-                barcodeCaptureActivtyIntent.putExtra(BarcodeCaptureActivity.AutoFocus,true);
-                startActivityForResult(barcodeCaptureActivtyIntent,BARCODE_REQUEST_CODE);
+                barcodeCaptureActivtyIntent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
+                startActivityForResult(barcodeCaptureActivtyIntent, BARCODE_REQUEST_CODE);
             }
         });
 
@@ -167,24 +175,21 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             return;
         }
 
-        String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
-        ((TextView) rootView.findViewById(R.id.bookTitle)).setText(bookTitle);
+        VolumeInfo volumeInfo = new BookProviderHelper().fromCursorToVolumeInfo(data);
 
-        String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
-        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText(bookSubTitle);
+        ((TextView) rootView.findViewById(R.id.bookTitle)).setText(volumeInfo.title());
+        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText(volumeInfo.subtitle());
 
-        String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
-        ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
-        ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",","\n"));
-        String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-        if(Patterns.WEB_URL.matcher(imgUrl).matches()){
-            new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
+        ((TextView) rootView.findViewById(R.id.authors)).setLines(volumeInfo.authors().size());
+        String authorsJoined = TextUtils.join("\n", volumeInfo.authors());
+        ((TextView) rootView.findViewById(R.id.authors)).setText(authorsJoined);
+
+        if(Patterns.WEB_URL.matcher(volumeInfo.imageLinks().thubmnail()).matches()){
+            Picasso.with(getActivity()).load(volumeInfo.imageLinks().thubmnail()).into(((ImageView) rootView.findViewById(R.id.bookCover)));
             rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
         }
-
-        String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
-        ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
+        String categoriesString = TextUtils.join(",",volumeInfo.categories());
+        ((TextView) rootView.findViewById(R.id.categories)).setText(categoriesString);
 
         rootView.findViewById(R.id.save_button).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.delete_button).setVisibility(View.VISIBLE);
@@ -213,19 +218,35 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     @Override
     public void onBookFound(String ean, VolumeInfo info) {
-        BookProviderHelper bookProviderHelper = new BookProviderHelper();
-        bookProviderHelper.writeBackBook(getActivity().getContentResolver(),
-                ean,
-                info);
-        Log.d("BOok", info.title());
+        hideProgressBar();
+        if(info==null){
+            setErrorMessage(getResources().getString(R.string.no_book_found_error,ean));
+        } else {
+            BookProviderHelper bookProviderHelper = new BookProviderHelper();
+            bookProviderHelper.writeBackBook(getActivity().getContentResolver(),
+                    ean,
+                    info);
+        }
     }
 
     @Override
-    public void onBookFoundError(Exception e) {
-        setErrorMessage(e.getMessage());
+    public void onBookFoundError(@BookApiServiceError int error) {
+        hideProgressBar();
+        if(error==BookServiceListener.NO_ROUTE_TO_SERVER_ERROR){
+            if(!Utility.isNetworAvailable(getActivity())){
+                setErrorMessage(getResources().getString(R.string.no_internet_error));
+            } else {
+                setErrorMessage(getResources().getString(R.string.server_down_error));    
+            }
+            
+        } else if(error==BookServiceListener.SERVER_ERROR){
+            setErrorMessage(getResources().getString(R.string.server_error_string));
+        } else {
+            setErrorMessage(getResources().getString(R.string.unknown_error));
+        }
     }
 
     public void setErrorMessage(String message){
-        mErrorMessage.setText(message);
+        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
 }

@@ -14,4 +14,12 @@ public class ImageLinks {
     public String thubmnail(){
         return thumbnail;
     }
+
+    public void thumbnail (String theThumbnail){
+        if(theThumbnail==null){
+            thumbnail="";
+        } else {
+            thumbnail=theThumbnail;
+        }
+    }
 }

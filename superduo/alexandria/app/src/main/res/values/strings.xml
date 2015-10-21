@@ -14,7 +14,7 @@
     <string name="input_hint">Insert ISBN-13. Digits only.</string>
     <string name="book_cover">Bookcover</string>
 
-    <string name="ok_button">Next</string>
+    <string name="ok_button">Save</string>
     <string name="cancel_button">Cancel</string>
     <string name="not_found">No Book found</string>
     <string name="search">Search</string>
@@ -36,4 +36,9 @@
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
     <string name="ok">OK</string>
     <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+    <string name="server_error_string">The server has returned an error. Please try again later.</string>
+    <string name="server_down_error">We cannot find the book API server, looks like it\'s down. Please try again later.</string>
+    <string name="no_internet_error">You are not connected to the Internet, please check your connection.</string>
+    <string name="unknown_error">To be honest, we are having problems to get the books information and we don\'t know why... ;(</string>
+    <string name="no_book_found_error">No book found for ean %1$s</string>
 </resources>

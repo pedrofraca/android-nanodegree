@@ -6,6 +6,7 @@ import android.database.Cursor;
 
 import java.util.List;
 
+import it.jaschke.alexandria.services.model.ImageLinks;
 import it.jaschke.alexandria.services.model.VolumeInfo;
 
 /**
@@ -17,10 +18,12 @@ public class BookProviderHelper {
         ContentValues values= new ContentValues();
         values.put(AlexandriaContract.BookEntry._ID, ean);
         values.put(AlexandriaContract.BookEntry.TITLE, volumeInfo.title());
-        if(volumeInfo.imageLinks().thubmnail()!=null){
-            values.put(AlexandriaContract.BookEntry.IMAGE_URL,volumeInfo.imageLinks().thubmnail());
-        } else {
-            values.put(AlexandriaContract.BookEntry.IMAGE_URL,volumeInfo.imageLinks().smallThumbnail());
+        if(volumeInfo.imageLinks()!=null){
+            if(volumeInfo.imageLinks().thubmnail()!=null){
+                values.put(AlexandriaContract.BookEntry.IMAGE_URL,volumeInfo.imageLinks().thubmnail());
+            } else {
+                values.put(AlexandriaContract.BookEntry.IMAGE_URL,volumeInfo.imageLinks().smallThumbnail());
+            }
         }
         values.put(AlexandriaContract.BookEntry.SUBTITLE, volumeInfo.subtitle());
         values.put(AlexandriaContract.BookEntry.DESC, volumeInfo.description());
@@ -31,6 +34,9 @@ public class BookProviderHelper {
 
     private void writeBackAuthors(ContentResolver contentResolver,String ean, List<String> authors) {
         ContentValues values= new ContentValues();
+        if(authors==null){
+            return;
+        }
         for (String author : authors) {
             values.put(AlexandriaContract.AuthorEntry._ID, ean);
             values.put(AlexandriaContract.AuthorEntry.AUTHOR, author);
@@ -41,6 +47,9 @@ public class BookProviderHelper {
 
     private void writeBackCategories(ContentResolver contentResolver,String ean,  List<String> categories) {
         ContentValues values= new ContentValues();
+        if(categories==null){
+            return;
+        }
         for (String category:categories) {
             values.put(AlexandriaContract.CategoryEntry._ID, ean);
             values.put(AlexandriaContract.CategoryEntry.CATEGORY, category);
@@ -78,5 +87,24 @@ public class BookProviderHelper {
         if(ean!=null) {
             contentResolver.delete(AlexandriaContract.BookEntry.buildBookUri(Long.parseLong(ean)), null, null);
         }
+    }
+
+    public VolumeInfo fromCursorToVolumeInfo(Cursor data){
+        VolumeInfo volumeInfo = new VolumeInfo();
+        String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
+        String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
+        String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
+        String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
+        String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
+        String desc = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.DESC));
+        volumeInfo.title(bookTitle);
+        volumeInfo.description(desc);
+        volumeInfo.subtitle(bookSubTitle);
+        volumeInfo.authors(authors);
+        volumeInfo.categories(categories);
+        ImageLinks imageLinks = new ImageLinks();
+        imageLinks.thumbnail(imgUrl);
+        volumeInfo.imageLinks(imageLinks);
+        return volumeInfo;
     }
 }
