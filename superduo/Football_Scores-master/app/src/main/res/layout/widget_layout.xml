@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:background="@drawable/widget_preview"
+        android:background="@drawable/ic_launcher"
         android:textColor="#ffffff"
         android:textStyle="bold"
         android:text="@string/empty_view_text"

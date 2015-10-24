@@ -39,7 +39,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     private static final int BARCODE_REQUEST_CODE=23;
 
-    private TextView mErrorMessage;
     private View mProgressBarView;
 
 
@@ -79,7 +78,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ean = (EditText) rootView.findViewById(R.id.ean);
-        mErrorMessage = (TextView) rootView.findViewById(R.id.errorMessage);
         mProgressBarView = rootView.findViewById(R.id.progress_bar);
         ean.addTextChangedListener(new TextWatcher() {
             @Override
