@@ -16,6 +16,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <ImageView
+                android:contentDescription="@string/content_description_home_crest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -25,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textSize="@dimen/TeamNames"
+                android:contentDescription="@string/content_description_home_team"
                 android:gravity="center"
                 android:text="@string/test_text"
                 android:id="@+id/home_name"/>
@@ -38,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:contentDescription="@string/content_description_score_information"
                 android:text="@string/test_text"
                 android:layout_gravity="center"
                 android:gravity="center"
@@ -46,6 +49,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:contentDescription="@string/content_description_match_info"
                 android:layout_weight="1"
                 android:text="@string/test_text"
                 android:layout_gravity="center"
@@ -60,10 +64,12 @@
             android:orientation="vertical">
             <ImageView
                 android:layout_width="wrap_content"
+                android:contentDescription="@string/content_description_away_crest"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:id="@+id/away_crest"/>
             <TextView
+                android:contentDescription="@string/content_description_away_team"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
