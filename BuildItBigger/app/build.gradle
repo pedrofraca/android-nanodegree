@@ -22,7 +22,6 @@ android {
     productFlavors{
         free {
             applicationId "com.udacity.gradle.builditbigger.free"
-
         }
         paid {
             applicationId "com.udacity.gradle.builditbigger.paid"
@@ -33,7 +32,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':jokeslibrary')
-    // Added for AdMob
-    compile 'com.google.android.gms:play-services-ads:8.4.0'
     compile project(path: ':backend', configuration: 'android-endpoints')
+    // Added for AdMob and for the free flavor
+    freeCompile 'com.google.android.gms:play-services-ads:8.4.0'
 }

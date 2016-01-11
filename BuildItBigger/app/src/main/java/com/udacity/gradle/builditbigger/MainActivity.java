@@ -2,10 +2,10 @@ package com.udacity.gradle.builditbigger;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import io.github.pedrofraca.jokeslibrary.JokeActivity;
 
@@ -58,6 +58,6 @@ public class MainActivity extends AppCompatActivity implements GetJokeAsyncTaskL
     @Override
     public void onTokenError(Exception e) {
         mProgressView.setVisibility(View.GONE);
-        Log.d("Error",e.getMessage());
+        Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
     }
 }
