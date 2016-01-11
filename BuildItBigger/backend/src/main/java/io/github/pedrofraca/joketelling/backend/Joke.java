@@ -1,15 +1,15 @@
 package io.github.pedrofraca.joketelling.backend;
 
 /** The object model for the data we are sending through endpoints */
-public class MyBean {
+public class Joke {
 
-    private String myData;
+    private String mJokeData;
 
     public String getData() {
-        return myData;
+        return mJokeData;
     }
 
     public void setData(String data) {
-        myData = data;
+        mJokeData = data;
     }
 }

@@ -22,12 +22,12 @@ import io.github.pedrofraca.lib.JokeProvider;
     packagePath=""
   )
 )
-public class MyEndpoint {
+public class JokeEndpoint {
 
     /** A simple endpoint method that takes a name and says Hi back */
     @ApiMethod(name = "joke")
-    public MyBean nextJoke() {
-        MyBean response = new MyBean();
+    public Joke nextJoke() {
+        Joke response = new Joke();
 
         response.setData(new JokeProvider().next());
 
