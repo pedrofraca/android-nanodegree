@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">BabyDiary</string>
     <string name="add_baby_information_intro">Congratulations! Add your baby information to start playing with the app and start recording your baby information.</string>
+    <string name="baby_name">Baby Name</string>
+
+    <string-array name="gender_array">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
 </resources>

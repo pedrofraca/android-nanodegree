@@ -17,4 +17,9 @@
         </activity>
     </application>
 
+    <provider
+        android:name="io.github.pedrofraca.babydiary.provider.BabyProvider"
+        android:authorities="io.github.pedrofraca.babydiary.provider"
+        android:exported="false" />
+
 </manifest>

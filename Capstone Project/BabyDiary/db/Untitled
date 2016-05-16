@@ -1,0 +1,13 @@
+{
+    "syntaxVersion": 3,
+    "projectPackageId": "io.github.pedrofraca.babydiary",
+    "authority": "io.github.pedrofraca.babydiary.provider",
+    "providerJavaPackage": "io.github.pedrofraca.babydiary.provider",
+    "providerClassName": "BabyProvider",
+    "sqliteOpenHelperClassName": "BabyDiarySQLiteOpenHelper",
+    "sqliteOpenHelperCallbacksClassName": "BabyDiarySQLiteOpenHelperCallbacks",
+    "databaseFileName": "baby_diary.db",
+    "databaseVersion": 1,
+    "enableForeignKeys": true,
+    "useAnnotations": true
+}

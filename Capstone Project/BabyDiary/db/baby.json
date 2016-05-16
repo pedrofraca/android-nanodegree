@@ -1,0 +1,26 @@
+{
+    "documentation": "Entity to store babies.",
+    "fields": [
+        {
+            "documentation": "Name of the baby.",
+            "name": "name",
+            "type": "String",
+            "defaultValue": ""
+        },
+        {
+            "name": "date_of_birth",
+            "type": "Date"
+        },
+        {
+            "name": "gender",
+            "type": "enum",
+            "enumName": "Gender",
+            "enumValues": [
+                "MALE",
+                "FEMALE",
+                {"OTHER": "Value to use when neither male nor female"}
+            ],
+            "nullable": false
+        }
+    ]
+}
