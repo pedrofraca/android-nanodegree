@@ -3,7 +3,7 @@
     "projectPackageId": "io.github.pedrofraca.babydiary",
     "authority": "io.github.pedrofraca.babydiary.provider",
     "providerJavaPackage": "io.github.pedrofraca.babydiary.provider",
-    "providerClassName": "BabyProvider",
+    "providerClassName": "BabyDiaryProvider",
     "sqliteOpenHelperClassName": "BabyDiarySQLiteOpenHelper",
     "sqliteOpenHelperCallbacksClassName": "BabyDiarySQLiteOpenHelperCallbacks",
     "databaseFileName": "baby_diary.db",

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/colorAccent"
+    android:layout_height="match_parent">
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numColumns="3"
+        android:columnCount="3"
+        android:rowCount="2"
+        android:orientation="horizontal"
+        android:layout_centerInParent="true">
+
+        <LinearLayout android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content">
+            <ImageButton android:layout_height="wrap_content"
+                android:id="@+id/create_photo_event"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/colorAccent"
+                android:src="@drawable/ic_photo_camera_white_48dp"/>
+            <TextView
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/photo"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content">
+            <ImageButton android:layout_height="wrap_content"
+                android:id="@+id/create_video_event"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/colorAccent"
+                android:src="@drawable/ic_videocam_white_48dp"/>
+            <TextView
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/video"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content">
+            <ImageButton android:layout_height="wrap_content"
+                android:id="@+id/create_audio_event"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/colorAccent"
+                android:src="@drawable/ic_audiotrack_white_48dp"/>
+            <TextView
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/audio"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content">
+            <ImageButton android:layout_height="wrap_content"
+                android:id="@+id/create_text_event"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/colorAccent"
+                android:src="@drawable/ic_text_fields_white_48dp"/>
+            <TextView
+
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text"/>
+        </LinearLayout>
+
+
+        <LinearLayout android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content">
+            <ImageButton android:layout_height="wrap_content"
+                android:id="@+id/create_measure_event"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/colorAccent"
+                android:src="@drawable/ic_change_history_white_48dp"/>
+            <TextView
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/measure"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content">
+            <ImageButton android:layout_height="wrap_content"
+                android:id="@+id/create_vaccine_event"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/colorAccent"
+                android:src="@drawable/ic_local_hospital_white_48dp"/>
+            <TextView
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/vaccine"/>
+        </LinearLayout>
+
+
+    </GridLayout>
+
+    </RelativeLayout>
+

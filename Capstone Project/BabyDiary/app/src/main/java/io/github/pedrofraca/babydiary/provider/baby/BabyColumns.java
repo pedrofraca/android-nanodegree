@@ -5,6 +5,7 @@ import android.provider.BaseColumns;
 
 import io.github.pedrofraca.babydiary.provider.BabyProvider;
 import io.github.pedrofraca.babydiary.provider.baby.BabyColumns;
+import io.github.pedrofraca.babydiary.provider.event.EventColumns;
 
 /**
  * Entity to store babies.

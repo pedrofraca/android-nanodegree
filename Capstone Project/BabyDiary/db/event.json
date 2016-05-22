@@ -1,0 +1,81 @@
+{
+    "documentation": "Entity to store events related with a baby.",
+    "fields": [
+        {
+            "documentation": "Event title",
+            "name": "title",
+            "type": "String",
+            "defaultValue": ""
+        },
+        {
+            "documentation": "Event Description",
+            "name": "description",
+            "type": "String",
+            "defaultValue": ""
+        },
+        {
+            "documentation": "Event Location",
+            "name": "location",
+            "type": "String",
+            "defaultValue": ""
+        },
+        {
+            "documentation": "Media Path",
+            "name": "media_path",
+            "type": "String",
+            "defaultValue": ""
+        },
+        {
+            "documentation": "Height",
+            "name": "height",
+            "type": "Double",
+            "defaultValue": ""
+        },
+        {
+            "documentation": "Weight",
+            "name": "weight",
+            "type": "Double",
+            "defaultValue": ""
+        },
+        {
+            "documentation": "Vaccine Name",
+            "name": "vaccine_name",
+            "type": "Double",
+            "defaultValue": ""
+        },
+        {
+            "documentation": "Vaccine Description",
+            "name": "vaccine_description",
+            "type": "Double",
+            "defaultValue": ""
+        },
+        {
+            "name": "date",
+            "type": "Date"
+        },
+        {
+            "name": "type",
+            "type": "enum",
+            "enumName": "EventType",
+            "enumValues": [
+                "PHOTO",
+                "VIDEO",
+                "AUDIO",
+                "TEXT",
+                "MEASURE",
+                "VACCINE",
+                {"OTHER": "Value to use when neither male nor female"}
+            ],
+            "nullable": false
+        },
+        {
+            "name": "baby_id",
+            "type": "Long",
+            "nullable": false,
+            "foreignKey": {
+                "table": "baby",
+                "onDelete": "CASCADE"
+            }
+        }
+    ]
+}

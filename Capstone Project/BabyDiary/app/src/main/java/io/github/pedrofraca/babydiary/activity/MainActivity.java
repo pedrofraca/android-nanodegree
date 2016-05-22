@@ -1,7 +1,9 @@
-package io.github.pedrofraca.babydiary;
+package io.github.pedrofraca.babydiary.activity;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,16 +17,33 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import io.github.pedrofraca.babydiary.R;
+import io.github.pedrofraca.babydiary.provider.baby.BabyColumns;
+import io.github.pedrofraca.babydiary.provider.baby.BabyContentValues;
+import io.github.pedrofraca.babydiary.provider.baby.BabyCursor;
+import io.github.pedrofraca.babydiary.provider.baby.BabySelection;
+import io.github.pedrofraca.babydiary.provider.baby.Gender;
+
 public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private Button mDatePicker;
+    private TextInputEditText mBabyName;
+    private Spinner mGenderSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        BabyCursor allBabies = new BabySelection().query(this);
+        if (allBabies != null && allBabies.moveToFirst()) {
+            startActivity(TimelineActivity.newIntent(MainActivity.this));
+            finish();
+        }
+
         mDatePicker = (Button) findViewById(R.id.datePicker);
+        mBabyName = (TextInputEditText) findViewById(R.id.baby_name);
+        mGenderSpinner = (Spinner) findViewById(R.id.spinner_gender);
 
         mDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +69,32 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 R.array.gender_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+
+        FloatingActionButton saveFab = (FloatingActionButton) findViewById(R.id.save_fab);
+        saveFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mBabyName.getText().toString().isEmpty()){
+                    mBabyName.setError(getString(R.string.time_to_decide_baby_time));
+                } else {
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                        Date parsedDate = sdf.parse(mDatePicker.getText().toString());
+                        BabyContentValues baby = new BabyContentValues();
+                        baby.putDateOfBirth(parsedDate);
+                        baby.putName(mBabyName.getText().toString());
+                        baby.putGender(Gender.valueOf(mGenderSpinner.getSelectedItem().toString().toUpperCase()));
+                        getContentResolver().insert(BabyColumns.CONTENT_URI,baby.values());
+                        startActivity(TimelineActivity.newIntent(MainActivity.this));
+                        finish();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
     }
 
 
@@ -63,8 +108,5 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-
-
     }
 }

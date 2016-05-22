@@ -2,10 +2,29 @@
     <string name="app_name">BabyDiary</string>
     <string name="add_baby_information_intro">Congratulations! Add your baby information to start playing with the app and start recording your baby information.</string>
     <string name="baby_name">Baby Name</string>
+    <string name="time_to_decide_baby_time">Time to decide your baby name..!</string>
+    <string name="vaccine">Vaccine</string>
+    <string name="measure">Measure</string>
+    <string name="text">Text</string>
+    <string name="audio">Audio</string>
+    <string name="video">Video</string>
+    <string name="photo">Photo</string>
 
     <string-array name="gender_array">
         <item>Male</item>
         <item>Female</item>
     </string-array>
+
+    <string name="google_maps_key">AIzaSyBCj72ag4wDmG9RLgKY20R8eBW_G6E5MYM</string>
+    <string name="select_location_label">Select Location</string>
+    <string name="use_this_location">Use this location</string>
+    <string name="create_audio_event">Create Audio Event</string>
+    <string name="create_measure_event">Create Measure Event</string>
+    <string name="create_photo_event">Create Photo Event</string>
+    <string name="create_text_event">Create Text Event</string>
+    <string name="create_vaccine_event">Create Vaccine Event</string>
+    <string name="create_video_event">Create Video Event</string>
+    <string name="need_provide_title">You need to provide a title</string>
+    <string name="need_provide_description">You need to provide a description</string>
 
 </resources>

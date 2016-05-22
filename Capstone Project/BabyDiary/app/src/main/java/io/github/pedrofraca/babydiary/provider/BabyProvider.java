@@ -13,6 +13,7 @@ import android.util.Log;
 import io.github.pedrofraca.babydiary.BuildConfig;
 import io.github.pedrofraca.babydiary.provider.base.BaseContentProvider;
 import io.github.pedrofraca.babydiary.provider.baby.BabyColumns;
+import io.github.pedrofraca.babydiary.provider.event.EventColumns;
 
 public class BabyProvider extends BaseContentProvider {
     private static final String TAG = BabyProvider.class.getSimpleName();
@@ -28,6 +29,9 @@ public class BabyProvider extends BaseContentProvider {
     private static final int URI_TYPE_BABY = 0;
     private static final int URI_TYPE_BABY_ID = 1;
 
+    private static final int URI_TYPE_EVENT = 2;
+    private static final int URI_TYPE_EVENT_ID = 3;
+
 
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
@@ -35,6 +39,8 @@ public class BabyProvider extends BaseContentProvider {
     static {
         URI_MATCHER.addURI(AUTHORITY, BabyColumns.TABLE_NAME, URI_TYPE_BABY);
         URI_MATCHER.addURI(AUTHORITY, BabyColumns.TABLE_NAME + "/#", URI_TYPE_BABY_ID);
+        URI_MATCHER.addURI(AUTHORITY, EventColumns.TABLE_NAME, URI_TYPE_EVENT);
+        URI_MATCHER.addURI(AUTHORITY, EventColumns.TABLE_NAME + "/#", URI_TYPE_EVENT_ID);
     }
 
     @Override
@@ -55,6 +61,11 @@ public class BabyProvider extends BaseContentProvider {
                 return TYPE_CURSOR_DIR + BabyColumns.TABLE_NAME;
             case URI_TYPE_BABY_ID:
                 return TYPE_CURSOR_ITEM + BabyColumns.TABLE_NAME;
+
+            case URI_TYPE_EVENT:
+                return TYPE_CURSOR_DIR + EventColumns.TABLE_NAME;
+            case URI_TYPE_EVENT_ID:
+                return TYPE_CURSOR_ITEM + EventColumns.TABLE_NAME;
 
         }
         return null;
@@ -106,12 +117,24 @@ public class BabyProvider extends BaseContentProvider {
                 res.orderBy = BabyColumns.DEFAULT_ORDER;
                 break;
 
+            case URI_TYPE_EVENT:
+            case URI_TYPE_EVENT_ID:
+                res.table = EventColumns.TABLE_NAME;
+                res.idColumn = EventColumns._ID;
+                res.tablesWithJoins = EventColumns.TABLE_NAME;
+                if (BabyColumns.hasColumns(projection)) {
+                    res.tablesWithJoins += " LEFT OUTER JOIN " + BabyColumns.TABLE_NAME + " AS " + EventColumns.PREFIX_BABY + " ON " + EventColumns.TABLE_NAME + "." + EventColumns.BABY_ID + "=" + EventColumns.PREFIX_BABY + "." + BabyColumns._ID;
+                }
+                res.orderBy = EventColumns.DEFAULT_ORDER;
+                break;
+
             default:
                 throw new IllegalArgumentException("The uri '" + uri + "' is not supported by this ContentProvider");
         }
 
         switch (matchedId) {
             case URI_TYPE_BABY_ID:
+            case URI_TYPE_EVENT_ID:
                 id = uri.getLastPathSegment();
         }
         if (id != null) {

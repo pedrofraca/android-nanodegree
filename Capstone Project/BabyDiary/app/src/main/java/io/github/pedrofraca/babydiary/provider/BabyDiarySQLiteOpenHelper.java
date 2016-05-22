@@ -11,6 +11,7 @@ import android.util.Log;
 
 import io.github.pedrofraca.babydiary.BuildConfig;
 import io.github.pedrofraca.babydiary.provider.baby.BabyColumns;
+import io.github.pedrofraca.babydiary.provider.event.EventColumns;
 
 public class BabyDiarySQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String TAG = BabyDiarySQLiteOpenHelper.class.getSimpleName();
@@ -28,6 +29,23 @@ public class BabyDiarySQLiteOpenHelper extends SQLiteOpenHelper {
             + BabyColumns.NAME + " TEXT, "
             + BabyColumns.DATE_OF_BIRTH + " INTEGER, "
             + BabyColumns.GENDER + " INTEGER NOT NULL "
+            + " );";
+
+    public static final String SQL_CREATE_TABLE_EVENT = "CREATE TABLE IF NOT EXISTS "
+            + EventColumns.TABLE_NAME + " ( "
+            + EventColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + EventColumns.TITLE + " TEXT, "
+            + EventColumns.DESCRIPTION + " TEXT, "
+            + EventColumns.LOCATION + " TEXT, "
+            + EventColumns.MEDIA_PATH + " TEXT, "
+            + EventColumns.HEIGHT + " REAL, "
+            + EventColumns.WEIGHT + " REAL, "
+            + EventColumns.VACCINE_NAME + " REAL, "
+            + EventColumns.VACCINE_DESCRIPTION + " REAL, "
+            + EventColumns.DATE + " INTEGER, "
+            + EventColumns.TYPE + " INTEGER NOT NULL, "
+            + EventColumns.BABY_ID + " INTEGER NOT NULL "
+            + ", CONSTRAINT fk_baby_id FOREIGN KEY (" + EventColumns.BABY_ID + ") REFERENCES baby (_id) ON DELETE CASCADE"
             + " );";
 
     // @formatter:on
@@ -85,6 +103,7 @@ public class BabyDiarySQLiteOpenHelper extends SQLiteOpenHelper {
         if (BuildConfig.DEBUG) Log.d(TAG, "onCreate");
         mOpenHelperCallbacks.onPreCreate(mContext, db);
         db.execSQL(SQL_CREATE_TABLE_BABY);
+        db.execSQL(SQL_CREATE_TABLE_EVENT);
         mOpenHelperCallbacks.onPostCreate(mContext, db);
     }
 

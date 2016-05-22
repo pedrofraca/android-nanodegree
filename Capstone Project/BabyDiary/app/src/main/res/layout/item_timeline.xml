@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:background="@color/colorMainContrast"
+    android:paddingLeft="8dp"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorMainContrast"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:background="@color/colorMainContrastDark"></View>
+        <ImageView
+            android:id="@+id/event_icon"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/circle_shape"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_local_hospital_white_24dp"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:background="@color/colorMainContrastDark"></View>
+    </LinearLayout>
+    <android.support.v7.widget.CardView
+        android:id="@+id/event_card_view"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:layout_margin="8dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/event_image"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:src="@drawable/test"
+                android:scaleType="centerCrop"
+                android:layout_height="match_parent" />
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:padding="16dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:background="@android:color/white">
+                <TextView
+                    android:textColor="@color/colorMainContrastDark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/event_title"
+                    android:text="This is a title"
+                    android:textSize="32sp"/>
+                <TextView
+                    android:textColor="@color/colorMainContrastDark"
+                    android:layout_below="@id/event_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/event_description"
+                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                    android:textSize="8sp"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>
