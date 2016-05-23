@@ -3,7 +3,7 @@ package io.github.pedrofraca.babydiary.provider.baby;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import io.github.pedrofraca.babydiary.provider.BabyProvider;
+import io.github.pedrofraca.babydiary.provider.BabyDiaryProvider;
 import io.github.pedrofraca.babydiary.provider.baby.BabyColumns;
 import io.github.pedrofraca.babydiary.provider.event.EventColumns;
 
@@ -12,7 +12,7 @@ import io.github.pedrofraca.babydiary.provider.event.EventColumns;
  */
 public class BabyColumns implements BaseColumns {
     public static final String TABLE_NAME = "baby";
-    public static final Uri CONTENT_URI = Uri.parse(BabyProvider.CONTENT_URI_BASE + "/" + TABLE_NAME);
+    public static final Uri CONTENT_URI = Uri.parse(BabyDiaryProvider.CONTENT_URI_BASE + "/" + TABLE_NAME);
 
     /**
      * Primary key.

@@ -1,4 +1,4 @@
-package io.github.pedrofraca.babydiary;
+package io.github.pedrofraca.babydiary.adapter;
 
 import android.database.Cursor;
 import android.support.v7.widget.CardView;
@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import io.github.pedrofraca.babydiary.R;
 import io.github.pedrofraca.babydiary.provider.event.EventCursor;
+import io.github.pedrofraca.babydiary.utils.BabyDiaryImage;
+import io.github.pedrofraca.babydiary.utils.EventUtils;
 
 /**
  * Created by pedrofraca on 19/05/16.
@@ -17,8 +20,10 @@ import io.github.pedrofraca.babydiary.provider.event.EventCursor;
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
 
     private EventCursor mData;
+    private OnEventClickedListener mListener;
 
-    public TimelineAdapter(Cursor data) {
+    public TimelineAdapter(Cursor data, OnEventClickedListener listener) {
+        mListener = listener;
         mData = new EventCursor(data);
     }
 
@@ -34,7 +39,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         mData.moveToPosition(position);
         if(mData.getMediaPath()!=null && !mData.getMediaPath().isEmpty()){
             new BabyDiaryImage().loadImageOnImageView(mData.getMediaPath(),
@@ -42,6 +47,14 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         }
         holder.mEventTitle.setText(mData.getTitle());
         holder.mEventDescription.setText(mData.getDescription());
+        holder.mEventIcon.setImageResource(EventUtils.getIconForEvent(mData.getType()));
+        holder.mEventCardView.setTag(mData.getId());
+        holder.mEventCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onEventClicked((Long) view.getTag());
+            }
+        });
     }
 
     @Override
@@ -69,5 +82,9 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
             mEventTitle = (TextView) v.findViewById(R.id.event_title);
             mEventCardView = (CardView) v.findViewById(R.id.event_card_view);
         }
+    }
+
+    public interface OnEventClickedListener {
+        void onEventClicked(long id);
     }
 }

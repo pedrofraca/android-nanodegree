@@ -66,15 +66,28 @@ public class EventContentValues extends AbstractContentValues {
     }
 
     /**
-     * Event Location
+     * Latitude
      */
-    public EventContentValues putLocation(@Nullable String value) {
-        mContentValues.put(EventColumns.LOCATION, value);
+    public EventContentValues putLatitude(@Nullable Double value) {
+        mContentValues.put(EventColumns.LATITUDE, value);
         return this;
     }
 
-    public EventContentValues putLocationNull() {
-        mContentValues.putNull(EventColumns.LOCATION);
+    public EventContentValues putLatitudeNull() {
+        mContentValues.putNull(EventColumns.LATITUDE);
+        return this;
+    }
+
+    /**
+     * Longitude
+     */
+    public EventContentValues putLongitude(@Nullable Double value) {
+        mContentValues.put(EventColumns.LONGITUDE, value);
+        return this;
+    }
+
+    public EventContentValues putLongitudeNull() {
+        mContentValues.putNull(EventColumns.LONGITUDE);
         return this;
     }
 
@@ -120,7 +133,7 @@ public class EventContentValues extends AbstractContentValues {
     /**
      * Vaccine Name
      */
-    public EventContentValues putVaccineName(@Nullable Double value) {
+    public EventContentValues putVaccineName(@Nullable String value) {
         mContentValues.put(EventColumns.VACCINE_NAME, value);
         return this;
     }
@@ -133,7 +146,7 @@ public class EventContentValues extends AbstractContentValues {
     /**
      * Vaccine Description
      */
-    public EventContentValues putVaccineDescription(@Nullable Double value) {
+    public EventContentValues putVaccineDescription(@Nullable String value) {
         mContentValues.put(EventColumns.VACCINE_DESCRIPTION, value);
         return this;
     }

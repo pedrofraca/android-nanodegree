@@ -1,8 +1,9 @@
-package io.github.pedrofraca.babydiary;
+package io.github.pedrofraca.babydiary.fragment;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -39,6 +41,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import io.github.pedrofraca.babydiary.utils.BabyDiaryImage;
+import io.github.pedrofraca.babydiary.utils.BabyUtils;
+import io.github.pedrofraca.babydiary.async.GetLocationForLatLng;
+import io.github.pedrofraca.babydiary.R;
 import io.github.pedrofraca.babydiary.activity.SelectLocationActivity;
 import io.github.pedrofraca.babydiary.provider.event.EventColumns;
 import io.github.pedrofraca.babydiary.provider.event.EventContentValues;
@@ -47,9 +53,12 @@ import io.github.pedrofraca.babydiary.provider.event.EventType;
 /**
  * Created by pedrofraca on 19/05/16.
  */
-public class CreateEventDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class CreateEventDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener, GetLocationForLatLng.OnGetLocationForLatLng {
     public static final String ATTR_EVENT_TYPE = "event_type";
+    public static final String ATTR_CURRENT_LOCATION = "ATTR_CURRENT_LOCATION";
     private static final int REQUEST_WRITE_PERMISSIONS = 3;
+    public static final String ATTR_LOCATION_ADDRESS = "ATTR_LOCATION_ADDRESS";
+    public static final String ATTR_CURRENT_MEDIA_PATH = "ATTR_CURRENT_MEDIA_PATH";
     private Button mDatePickerButton;
     private Button mAddLocation;
     String mCurrentMediaPath;
@@ -62,7 +71,14 @@ public class CreateEventDialogFragment extends DialogFragment implements DatePic
     private ImageButton mSaveButton;
     private TextInputEditText mTitle;
     private TextInputEditText mDescription;
+    private TextInputEditText mHeight;
+    private TextInputEditText mWeight;
+    private TextInputEditText mVaccineName;
+    private TextView mLocationTextView;
+    private ProgressBar mLocationProgress;
     private EventType mEvent;
+    private LatLng mCurrentLocation;
+    private String mLocationAddress;
 
     @Nullable
     @Override
@@ -95,6 +111,8 @@ public class CreateEventDialogFragment extends DialogFragment implements DatePic
         });
 
         mTakePhotoButton = (Button) rootView.findViewById(R.id.add_photo_button);
+        mLocationTextView = (TextView) rootView.findViewById(R.id.location_text);
+        mLocationProgress = (ProgressBar) rootView.findViewById(R.id.location_progress);
 
         mTakePhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,15 +134,49 @@ public class CreateEventDialogFragment extends DialogFragment implements DatePic
 
         mImageView = (ImageView) rootView.findViewById(R.id.image);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.date_format));
         mDatePickerButton.setText(sdf.format(new Date(System.currentTimeMillis())));
 
+        mEvent = EventType.valueOf(getArguments().getString(ATTR_EVENT_TYPE));
         setDialogTitle((TextView)rootView.findViewById(R.id.create_event_title));
-
+        if(mEvent == EventType.PHOTO){
+            rootView.findViewById(R.id.measure_container).setVisibility(View.GONE);
+            rootView.findViewById(R.id.vaccine_container).setVisibility(View.GONE);
+        }  else if (mEvent == EventType.MEASURE){
+            rootView.findViewById(R.id.vaccine_container).setVisibility(View.GONE);
+        } else if (mEvent == EventType.VACCINE){
+            rootView.findViewById(R.id.measure_container).setVisibility(View.GONE);
+        }
         mTitle = (TextInputEditText) rootView.findViewById(R.id.title_input);
+        mHeight = (TextInputEditText) rootView.findViewById(R.id.height_input);
+        mWeight = (TextInputEditText) rootView.findViewById(R.id.weight_input);
+        mVaccineName = (TextInputEditText) rootView.findViewById(R.id.vaccine_name_input);
         mDescription = (TextInputEditText) rootView.findViewById(R.id.description_input);
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ATTR_CURRENT_MEDIA_PATH,mCurrentMediaPath);
+        outState.putString(ATTR_LOCATION_ADDRESS,mLocationAddress);
+        outState.putParcelable(ATTR_CURRENT_LOCATION,mCurrentLocation);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState!=null){
+            mLocationAddress = savedInstanceState.getString(ATTR_LOCATION_ADDRESS);
+            mCurrentMediaPath = savedInstanceState.getString(ATTR_CURRENT_MEDIA_PATH);
+            mCurrentLocation = savedInstanceState.getParcelable(ATTR_CURRENT_LOCATION);
+
+            new BabyDiaryImage().loadImageOnImageView(mCurrentMediaPath,mImageView);
+            mLocationTextView.setText(mLocationAddress);
+
+        }
+
     }
 
     private void save() {
@@ -139,9 +191,27 @@ public class CreateEventDialogFragment extends DialogFragment implements DatePic
             valid = false;
         }
 
-        if(mCurrentMediaPath.isEmpty()){
-            Snackbar.make(mDescription,"A photo needs to be taken", Snackbar.LENGTH_SHORT).show();
+        if(mCurrentMediaPath==null || mCurrentMediaPath.isEmpty()){
+            Snackbar.make(mDescription, R.string.photo_warning, Snackbar.LENGTH_SHORT).show();
             valid = false;
+        }
+
+        if(mEvent == EventType.VACCINE){
+            if(mVaccineName.getText().toString().isEmpty()){
+                mVaccineName.setError(getActivity().getString(R.string.enter_vaccine_name));
+                valid=false;
+            }
+        }
+
+        if(mEvent == EventType.MEASURE){
+            if(mHeight.getText().toString().isEmpty()){
+                mHeight.setError(getActivity().getString(R.string.enter_height));
+                valid = false;
+            }
+            if(mWeight.getText().toString().isEmpty()){
+                mWeight.setError(getActivity().getString(R.string.enter_weight));
+                valid = false;
+            }
         }
 
         if(valid){
@@ -154,6 +224,21 @@ public class CreateEventDialogFragment extends DialogFragment implements DatePic
                 e.printStackTrace();
             }
             event.putType(mEvent);
+
+            if(mEvent == EventType.VACCINE){
+                event.putVaccineName(mVaccineName.getText().toString());
+            }
+
+            if(mEvent == EventType.MEASURE){
+                event.putWeight(Double.valueOf(mWeight.getText().toString()));
+                event.putHeight(Double.valueOf(mHeight.getText().toString()));
+            }
+
+            if(mCurrentLocation!=null){
+                event.putLatitude(mCurrentLocation.latitude);
+                event.putLongitude(mCurrentLocation.longitude);
+            }
+
             event.putDescription(mDescription.getText().toString());
             event.putTitle(mTitle.getText().toString());
             event.putMediaPath(mCurrentMediaPath);
@@ -165,7 +250,6 @@ public class CreateEventDialogFragment extends DialogFragment implements DatePic
     }
 
     private void setDialogTitle(TextView text) {
-        mEvent = EventType.valueOf(getArguments().getString(ATTR_EVENT_TYPE));
         switch (mEvent){
             case AUDIO:
                 text.setText(R.string.create_audio_event);
@@ -245,6 +329,13 @@ public class CreateEventDialogFragment extends DialogFragment implements DatePic
     }
 
     @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode==REQUEST_WRITE_PERMISSIONS){
@@ -266,8 +357,11 @@ public class CreateEventDialogFragment extends DialogFragment implements DatePic
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==SELECT_LOCATION_REQUEST_CODE && resultCode== Activity.RESULT_OK){
-            LatLng currentLocation = data.getParcelableExtra(SelectLocationActivity.RESULT_DATA_LOCATION);
-            Log.d("data",currentLocation.longitude+"");
+            mCurrentLocation = data.getParcelableExtra(SelectLocationActivity.RESULT_DATA_LOCATION);
+            new GetLocationForLatLng(new com.google.maps.model.LatLng(mCurrentLocation.latitude,mCurrentLocation.longitude))
+                    .listenedBy(CreateEventDialogFragment.this)
+                    .execute();
+            mLocationProgress.setVisibility(View.VISIBLE);
         } else  if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             //galleryAddPic();
             new BabyDiaryImage().loadImageOnImageView(mCurrentMediaPath,mImageView);
@@ -292,7 +386,7 @@ public class CreateEventDialogFragment extends DialogFragment implements DatePic
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.date_format));
         try {
             Date parsedData = sdf.parse(day + "-" + (month + 1) + "-" + year);
             mDatePickerButton.setText(sdf.format(parsedData));
@@ -300,15 +394,6 @@ public class CreateEventDialogFragment extends DialogFragment implements DatePic
             e.printStackTrace();
         }
     }
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentMediaPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        getActivity().sendBroadcast(mediaScanIntent);
-    }
-
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -339,5 +424,17 @@ public class CreateEventDialogFragment extends DialogFragment implements DatePic
         CreateEventDialogFragment createEventDialogFragment = new CreateEventDialogFragment();
         createEventDialogFragment.setArguments(bundle);
         return createEventDialogFragment;
+    }
+
+    @Override
+    public void onGetLocationSuccess(String bestLocation) {
+        mLocationAddress=bestLocation;
+        mLocationTextView.setText(bestLocation);
+        mLocationProgress.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onGetLocationError(Exception e) {
+
     }
 }

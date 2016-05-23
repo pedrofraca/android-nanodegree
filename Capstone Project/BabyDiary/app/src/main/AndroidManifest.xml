@@ -20,21 +20,28 @@
         </activity>
 
         <activity android:name=".activity.TimelineActivity"></activity>
+        <activity android:name=".activity.ShowImageActivity"></activity>
         <activity android:name=".activity.SelectLocationActivity"
             android:label="@string/select_location_label"></activity>
-        <activity android:name=".activity.CreateEventActivity"
-            android:label="Create event"
-            android:parentActivityName=".activity.TimelineActivity"></activity>
 
-        <provider
-            android:name="io.github.pedrofraca.babydiary.provider.BabyProvider"
-            android:authorities="io.github.pedrofraca.babydiary.provider"
-            android:exported="false" />
+        <activity android:name=".activity.EventDetailActivity"
+            android:parentActivityName=".activity.TimelineActivity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <provider
+            android:name="io.github.pedrofraca.babydiary.provider.BabyDiaryProvider"
+            android:authorities="io.github.pedrofraca.babydiary.provider"
+            android:exported="false" />
 
+        <receiver android:name=".widget.WidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/example_appwidget_info" />
+        </receiver>
     </application>
 
 

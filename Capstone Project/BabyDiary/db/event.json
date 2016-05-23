@@ -14,9 +14,15 @@
             "defaultValue": ""
         },
         {
-            "documentation": "Event Location",
-            "name": "location",
-            "type": "String",
+            "documentation": "Latitude",
+            "name": "latitude",
+            "type": "Double",
+            "defaultValue": ""
+        },
+        {
+            "documentation": "Longitude",
+            "name": "longitude",
+            "type": "Double",
             "defaultValue": ""
         },
         {
@@ -40,13 +46,13 @@
         {
             "documentation": "Vaccine Name",
             "name": "vaccine_name",
-            "type": "Double",
+            "type": "String",
             "defaultValue": ""
         },
         {
             "documentation": "Vaccine Description",
             "name": "vaccine_description",
-            "type": "Double",
+            "type": "String",
             "defaultValue": ""
         },
         {

@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -67,6 +68,10 @@ public class SelectLocationActivity extends AppCompatActivity implements OnMapRe
                     .addApi(LocationServices.API)
                     .build();
         }
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -113,7 +118,7 @@ public class SelectLocationActivity extends AppCompatActivity implements OnMapRe
         mMap.clear();
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation
                 , 12.0f));
-        mMap.addMarker(new MarkerOptions().position(currentLocation).title("Marker in Sydney"));
+        mMap.addMarker(new MarkerOptions().position(currentLocation).title(getString(R.string.your_location)));
     }
 
     @Override
@@ -130,8 +135,6 @@ public class SelectLocationActivity extends AppCompatActivity implements OnMapRe
 
         if(!denied){
             centerMapInCurrentLocation();
-        } else {
-
         }
     }
 

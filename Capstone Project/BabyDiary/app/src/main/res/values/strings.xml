@@ -26,5 +26,21 @@
     <string name="create_video_event">Create Video Event</string>
     <string name="need_provide_title">You need to provide a title</string>
     <string name="need_provide_description">You need to provide a description</string>
+    <string name="baby_diary_title">Diary of %1$s</string>
+    <string name="bday_countdown">%1$s days of life</string>
+    <string name="no_location_selected">No location selected</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="description">Description</string>
+    <string name="title">Title</string>
+    <string name="vaccine_name">Vaccine Name</string>
+    <string name="photo_warning">A photo needs to be taken</string>
+    <string name="enter_vaccine_name">You must enter a vaccine name</string>
+    <string name="enter_height">You must enter a height</string>
+    <string name="enter_weight">You must enter a weight</string>
+    <string name="date_format">dd-MM-yyyy</string>
+    <string name="your_location">Your location</string>
+    <string name="delete">Delete</string>
+    <string name="date">Date</string>
 
 </resources>

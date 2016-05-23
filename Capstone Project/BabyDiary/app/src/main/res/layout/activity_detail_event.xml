@@ -4,7 +4,6 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:background="@color/colorMainContrast"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -36,22 +35,5 @@
             </FrameLayout>
 
         </android.support.v4.widget.NestedScrollView>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/add_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            android:src="@drawable/ic_add_white_24dp"
-            app:layout_anchor="@id/scroll"
-            app:layout_anchorGravity="bottom|right|end" />
-
-        <FrameLayout
-            android:id="@+id/buttons_container"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_gravity="bottom|right"></FrameLayout>
-
 
     </android.support.design.widget.CoordinatorLayout>

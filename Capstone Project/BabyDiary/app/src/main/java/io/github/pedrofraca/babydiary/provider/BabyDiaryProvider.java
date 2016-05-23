@@ -1,22 +1,21 @@
 package io.github.pedrofraca.babydiary.provider;
 
-import java.util.Arrays;
-
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.util.Arrays;
+
 import io.github.pedrofraca.babydiary.BuildConfig;
-import io.github.pedrofraca.babydiary.provider.base.BaseContentProvider;
 import io.github.pedrofraca.babydiary.provider.baby.BabyColumns;
+import io.github.pedrofraca.babydiary.provider.base.BaseContentProvider;
 import io.github.pedrofraca.babydiary.provider.event.EventColumns;
 
-public class BabyProvider extends BaseContentProvider {
-    private static final String TAG = BabyProvider.class.getSimpleName();
+public class BabyDiaryProvider extends BaseContentProvider {
+    private static final String TAG = BabyDiaryProvider.class.getSimpleName();
 
     private static final boolean DEBUG = BuildConfig.DEBUG;
 
@@ -123,7 +122,7 @@ public class BabyProvider extends BaseContentProvider {
                 res.idColumn = EventColumns._ID;
                 res.tablesWithJoins = EventColumns.TABLE_NAME;
                 if (BabyColumns.hasColumns(projection)) {
-                    res.tablesWithJoins += " LEFT OUTER JOIN " + BabyColumns.TABLE_NAME + " AS " + EventColumns.PREFIX_BABY + " ON " + EventColumns.TABLE_NAME + "." + EventColumns.BABY_ID + "=" + EventColumns.PREFIX_BABY + "." + BabyColumns._ID;
+                    //res.tablesWithJoins += " LEFT OUTER JOIN " + BabyColumns.TABLE_NAME + " AS " + EventColumns.PREFIX_BABY + " ON " + EventColumns.TABLE_NAME + "." + EventColumns.BABY_ID + "=" + EventColumns.PREFIX_BABY + "." + BabyColumns._ID;
                 }
                 res.orderBy = EventColumns.DEFAULT_ORDER;
                 break;

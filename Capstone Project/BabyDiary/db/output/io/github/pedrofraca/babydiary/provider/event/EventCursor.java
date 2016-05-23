@@ -48,12 +48,22 @@ public class EventCursor extends AbstractCursor implements EventModel {
     }
 
     /**
-     * Event Location
+     * Latitude
      * Can be {@code null}.
      */
     @Nullable
-    public String getLocation() {
-        String res = getStringOrNull(EventColumns.LOCATION);
+    public Double getLatitude() {
+        Double res = getDoubleOrNull(EventColumns.LATITUDE);
+        return res;
+    }
+
+    /**
+     * Longitude
+     * Can be {@code null}.
+     */
+    @Nullable
+    public Double getLongitude() {
+        Double res = getDoubleOrNull(EventColumns.LONGITUDE);
         return res;
     }
 
@@ -92,8 +102,8 @@ public class EventCursor extends AbstractCursor implements EventModel {
      * Can be {@code null}.
      */
     @Nullable
-    public Double getVaccineName() {
-        Double res = getDoubleOrNull(EventColumns.VACCINE_NAME);
+    public String getVaccineName() {
+        String res = getStringOrNull(EventColumns.VACCINE_NAME);
         return res;
     }
 
@@ -102,8 +112,8 @@ public class EventCursor extends AbstractCursor implements EventModel {
      * Can be {@code null}.
      */
     @Nullable
-    public Double getVaccineDescription() {
-        Double res = getDoubleOrNull(EventColumns.VACCINE_DESCRIPTION);
+    public String getVaccineDescription() {
+        String res = getStringOrNull(EventColumns.VACCINE_DESCRIPTION);
         return res;
     }
 

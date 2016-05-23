@@ -27,11 +27,18 @@ public interface EventModel extends BaseModel {
     String getDescription();
 
     /**
-     * Event Location
+     * Latitude
      * Can be {@code null}.
      */
     @Nullable
-    String getLocation();
+    Double getLatitude();
+
+    /**
+     * Longitude
+     * Can be {@code null}.
+     */
+    @Nullable
+    Double getLongitude();
 
     /**
      * Media Path
@@ -59,14 +66,14 @@ public interface EventModel extends BaseModel {
      * Can be {@code null}.
      */
     @Nullable
-    Double getVaccineName();
+    String getVaccineName();
 
     /**
      * Vaccine Description
      * Can be {@code null}.
      */
     @Nullable
-    Double getVaccineDescription();
+    String getVaccineDescription();
 
     /**
      * Get the {@code date} value.

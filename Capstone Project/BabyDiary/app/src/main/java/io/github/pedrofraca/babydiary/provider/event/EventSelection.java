@@ -159,43 +159,83 @@ public class EventSelection extends AbstractSelection<EventSelection> {
         return this;
     }
 
-    public EventSelection location(String... value) {
-        addEquals(EventColumns.LOCATION, value);
+    public EventSelection latitude(Double... value) {
+        addEquals(EventColumns.LATITUDE, value);
         return this;
     }
 
-    public EventSelection locationNot(String... value) {
-        addNotEquals(EventColumns.LOCATION, value);
+    public EventSelection latitudeNot(Double... value) {
+        addNotEquals(EventColumns.LATITUDE, value);
         return this;
     }
 
-    public EventSelection locationLike(String... value) {
-        addLike(EventColumns.LOCATION, value);
+    public EventSelection latitudeGt(double value) {
+        addGreaterThan(EventColumns.LATITUDE, value);
         return this;
     }
 
-    public EventSelection locationContains(String... value) {
-        addContains(EventColumns.LOCATION, value);
+    public EventSelection latitudeGtEq(double value) {
+        addGreaterThanOrEquals(EventColumns.LATITUDE, value);
         return this;
     }
 
-    public EventSelection locationStartsWith(String... value) {
-        addStartsWith(EventColumns.LOCATION, value);
+    public EventSelection latitudeLt(double value) {
+        addLessThan(EventColumns.LATITUDE, value);
         return this;
     }
 
-    public EventSelection locationEndsWith(String... value) {
-        addEndsWith(EventColumns.LOCATION, value);
+    public EventSelection latitudeLtEq(double value) {
+        addLessThanOrEquals(EventColumns.LATITUDE, value);
         return this;
     }
 
-    public EventSelection orderByLocation(boolean desc) {
-        orderBy(EventColumns.LOCATION, desc);
+    public EventSelection orderByLatitude(boolean desc) {
+        orderBy(EventColumns.LATITUDE, desc);
         return this;
     }
 
-    public EventSelection orderByLocation() {
-        orderBy(EventColumns.LOCATION, false);
+    public EventSelection orderByLatitude() {
+        orderBy(EventColumns.LATITUDE, false);
+        return this;
+    }
+
+    public EventSelection longitude(Double... value) {
+        addEquals(EventColumns.LONGITUDE, value);
+        return this;
+    }
+
+    public EventSelection longitudeNot(Double... value) {
+        addNotEquals(EventColumns.LONGITUDE, value);
+        return this;
+    }
+
+    public EventSelection longitudeGt(double value) {
+        addGreaterThan(EventColumns.LONGITUDE, value);
+        return this;
+    }
+
+    public EventSelection longitudeGtEq(double value) {
+        addGreaterThanOrEquals(EventColumns.LONGITUDE, value);
+        return this;
+    }
+
+    public EventSelection longitudeLt(double value) {
+        addLessThan(EventColumns.LONGITUDE, value);
+        return this;
+    }
+
+    public EventSelection longitudeLtEq(double value) {
+        addLessThanOrEquals(EventColumns.LONGITUDE, value);
+        return this;
+    }
+
+    public EventSelection orderByLongitude(boolean desc) {
+        orderBy(EventColumns.LONGITUDE, desc);
+        return this;
+    }
+
+    public EventSelection orderByLongitude() {
+        orderBy(EventColumns.LONGITUDE, false);
         return this;
     }
 
@@ -319,33 +359,33 @@ public class EventSelection extends AbstractSelection<EventSelection> {
         return this;
     }
 
-    public EventSelection vaccineName(Double... value) {
+    public EventSelection vaccineName(String... value) {
         addEquals(EventColumns.VACCINE_NAME, value);
         return this;
     }
 
-    public EventSelection vaccineNameNot(Double... value) {
+    public EventSelection vaccineNameNot(String... value) {
         addNotEquals(EventColumns.VACCINE_NAME, value);
         return this;
     }
 
-    public EventSelection vaccineNameGt(double value) {
-        addGreaterThan(EventColumns.VACCINE_NAME, value);
+    public EventSelection vaccineNameLike(String... value) {
+        addLike(EventColumns.VACCINE_NAME, value);
         return this;
     }
 
-    public EventSelection vaccineNameGtEq(double value) {
-        addGreaterThanOrEquals(EventColumns.VACCINE_NAME, value);
+    public EventSelection vaccineNameContains(String... value) {
+        addContains(EventColumns.VACCINE_NAME, value);
         return this;
     }
 
-    public EventSelection vaccineNameLt(double value) {
-        addLessThan(EventColumns.VACCINE_NAME, value);
+    public EventSelection vaccineNameStartsWith(String... value) {
+        addStartsWith(EventColumns.VACCINE_NAME, value);
         return this;
     }
 
-    public EventSelection vaccineNameLtEq(double value) {
-        addLessThanOrEquals(EventColumns.VACCINE_NAME, value);
+    public EventSelection vaccineNameEndsWith(String... value) {
+        addEndsWith(EventColumns.VACCINE_NAME, value);
         return this;
     }
 
@@ -359,33 +399,33 @@ public class EventSelection extends AbstractSelection<EventSelection> {
         return this;
     }
 
-    public EventSelection vaccineDescription(Double... value) {
+    public EventSelection vaccineDescription(String... value) {
         addEquals(EventColumns.VACCINE_DESCRIPTION, value);
         return this;
     }
 
-    public EventSelection vaccineDescriptionNot(Double... value) {
+    public EventSelection vaccineDescriptionNot(String... value) {
         addNotEquals(EventColumns.VACCINE_DESCRIPTION, value);
         return this;
     }
 
-    public EventSelection vaccineDescriptionGt(double value) {
-        addGreaterThan(EventColumns.VACCINE_DESCRIPTION, value);
+    public EventSelection vaccineDescriptionLike(String... value) {
+        addLike(EventColumns.VACCINE_DESCRIPTION, value);
         return this;
     }
 
-    public EventSelection vaccineDescriptionGtEq(double value) {
-        addGreaterThanOrEquals(EventColumns.VACCINE_DESCRIPTION, value);
+    public EventSelection vaccineDescriptionContains(String... value) {
+        addContains(EventColumns.VACCINE_DESCRIPTION, value);
         return this;
     }
 
-    public EventSelection vaccineDescriptionLt(double value) {
-        addLessThan(EventColumns.VACCINE_DESCRIPTION, value);
+    public EventSelection vaccineDescriptionStartsWith(String... value) {
+        addStartsWith(EventColumns.VACCINE_DESCRIPTION, value);
         return this;
     }
 
-    public EventSelection vaccineDescriptionLtEq(double value) {
-        addLessThanOrEquals(EventColumns.VACCINE_DESCRIPTION, value);
+    public EventSelection vaccineDescriptionEndsWith(String... value) {
+        addEndsWith(EventColumns.VACCINE_DESCRIPTION, value);
         return this;
     }
 

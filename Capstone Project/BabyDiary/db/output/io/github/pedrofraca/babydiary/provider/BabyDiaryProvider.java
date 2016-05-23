@@ -15,8 +15,8 @@ import io.github.pedrofraca.babydiary.provider.base.BaseContentProvider;
 import io.github.pedrofraca.babydiary.provider.baby.BabyColumns;
 import io.github.pedrofraca.babydiary.provider.event.EventColumns;
 
-public class BabyProvider extends BaseContentProvider {
-    private static final String TAG = BabyProvider.class.getSimpleName();
+public class BabyDiaryProvider extends BaseContentProvider {
+    private static final String TAG = BabyDiaryProvider.class.getSimpleName();
 
     private static final boolean DEBUG = BuildConfig.DEBUG;
 

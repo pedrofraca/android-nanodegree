@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.date_format));
         mDatePicker.setText(sdf.format(new Date(System.currentTimeMillis())));
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner_gender);
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     mBabyName.setError(getString(R.string.time_to_decide_baby_time));
                 } else {
                     try {
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.date_format));
                         Date parsedDate = sdf.parse(mDatePicker.getText().toString());
                         BabyContentValues baby = new BabyContentValues();
                         baby.putDateOfBirth(parsedDate);
@@ -95,13 +96,15 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
 
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar);
+        setSupportActionBar(toolbar);
+
+
     }
-
-
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.date_format));
         try {
             Date parsedDate = sdf.parse(day+"-"+(month+1)+"-"+year);
             mDatePicker.setText(sdf.format(parsedDate));

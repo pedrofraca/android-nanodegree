@@ -1,13 +1,14 @@
 package io.github.pedrofraca.babydiary.provider.event;
 
-import java.util.Date;
-
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.Date;
+
+import io.github.pedrofraca.babydiary.provider.baby.BabyColumns;
+import io.github.pedrofraca.babydiary.provider.baby.Gender;
 import io.github.pedrofraca.babydiary.provider.base.AbstractCursor;
-import io.github.pedrofraca.babydiary.provider.baby.*;
 
 /**
  * Cursor wrapper for the {@code event} table.
@@ -48,12 +49,22 @@ public class EventCursor extends AbstractCursor implements EventModel {
     }
 
     /**
-     * Event Location
+     * Latitude
      * Can be {@code null}.
      */
     @Nullable
-    public String getLocation() {
-        String res = getStringOrNull(EventColumns.LOCATION);
+    public Double getLatitude() {
+        Double res = getDoubleOrNull(EventColumns.LATITUDE);
+        return res;
+    }
+
+    /**
+     * Longitude
+     * Can be {@code null}.
+     */
+    @Nullable
+    public Double getLongitude() {
+        Double res = getDoubleOrNull(EventColumns.LONGITUDE);
         return res;
     }
 
@@ -92,8 +103,8 @@ public class EventCursor extends AbstractCursor implements EventModel {
      * Can be {@code null}.
      */
     @Nullable
-    public Double getVaccineName() {
-        Double res = getDoubleOrNull(EventColumns.VACCINE_NAME);
+    public String getVaccineName() {
+        String res = getStringOrNull(EventColumns.VACCINE_NAME);
         return res;
     }
 
@@ -102,8 +113,8 @@ public class EventCursor extends AbstractCursor implements EventModel {
      * Can be {@code null}.
      */
     @Nullable
-    public Double getVaccineDescription() {
-        Double res = getDoubleOrNull(EventColumns.VACCINE_DESCRIPTION);
+    public String getVaccineDescription() {
+        String res = getStringOrNull(EventColumns.VACCINE_DESCRIPTION);
         return res;
     }
 

@@ -1,4 +1,4 @@
-package io.github.pedrofraca.babydiary;
+package io.github.pedrofraca.babydiary.utils;
 
 import android.content.Context;
 
@@ -16,5 +16,13 @@ public class BabyUtils {
             return allBabies.getId();
         }
         return -1;
+    }
+
+    public static String getCurrentActiveBabyName(Context context){
+        BabyCursor allBabies = new BabySelection().query(context);
+        if (allBabies != null && allBabies.moveToFirst()) {
+            return allBabies.getName();
+        }
+        return "";
     }
 }

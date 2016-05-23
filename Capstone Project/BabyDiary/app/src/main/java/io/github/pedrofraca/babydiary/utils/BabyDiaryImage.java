@@ -1,4 +1,4 @@
-package io.github.pedrofraca.babydiary;
+package io.github.pedrofraca.babydiary.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

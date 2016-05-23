@@ -3,7 +3,7 @@ package io.github.pedrofraca.babydiary.provider.event;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import io.github.pedrofraca.babydiary.provider.BabyProvider;
+import io.github.pedrofraca.babydiary.provider.BabyDiaryProvider;
 import io.github.pedrofraca.babydiary.provider.baby.BabyColumns;
 import io.github.pedrofraca.babydiary.provider.event.EventColumns;
 
@@ -12,7 +12,7 @@ import io.github.pedrofraca.babydiary.provider.event.EventColumns;
  */
 public class EventColumns implements BaseColumns {
     public static final String TABLE_NAME = "event";
-    public static final Uri CONTENT_URI = Uri.parse(BabyProvider.CONTENT_URI_BASE + "/" + TABLE_NAME);
+    public static final Uri CONTENT_URI = Uri.parse(BabyDiaryProvider.CONTENT_URI_BASE + "/" + TABLE_NAME);
 
     /**
      * Primary key.
@@ -30,9 +30,14 @@ public class EventColumns implements BaseColumns {
     public static final String DESCRIPTION = "description";
 
     /**
-     * Event Location
+     * Latitude
      */
-    public static final String LOCATION = "location";
+    public static final String LATITUDE = "latitude";
+
+    /**
+     * Longitude
+     */
+    public static final String LONGITUDE = "longitude";
 
     /**
      * Media Path
@@ -73,7 +78,8 @@ public class EventColumns implements BaseColumns {
             _ID,
             TITLE,
             DESCRIPTION,
-            LOCATION,
+            LATITUDE,
+            LONGITUDE,
             MEDIA_PATH,
             HEIGHT,
             WEIGHT,
@@ -90,7 +96,8 @@ public class EventColumns implements BaseColumns {
         for (String c : projection) {
             if (c.equals(TITLE) || c.contains("." + TITLE)) return true;
             if (c.equals(DESCRIPTION) || c.contains("." + DESCRIPTION)) return true;
-            if (c.equals(LOCATION) || c.contains("." + LOCATION)) return true;
+            if (c.equals(LATITUDE) || c.contains("." + LATITUDE)) return true;
+            if (c.equals(LONGITUDE) || c.contains("." + LONGITUDE)) return true;
             if (c.equals(MEDIA_PATH) || c.contains("." + MEDIA_PATH)) return true;
             if (c.equals(HEIGHT) || c.contains("." + HEIGHT)) return true;
             if (c.equals(WEIGHT) || c.contains("." + WEIGHT)) return true;

@@ -1,4 +1,4 @@
-package io.github.pedrofraca.babydiary;
+package io.github.pedrofraca.babydiary.fragment;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -14,6 +14,8 @@ import android.view.animation.DecelerateInterpolator;
 
 import java.util.Arrays;
 import java.util.Collections;
+
+import io.github.pedrofraca.babydiary.R;
 
 /**
  * Created by pedrofraca on 17/05/16.
@@ -61,9 +63,6 @@ public class AddEventFragment extends android.support.v4.app.Fragment {
         });
 
         rootView.findViewById(R.id.create_photo_event).setOnClickListener(clickListener);
-        rootView.findViewById(R.id.create_video_event).setOnClickListener(clickListener);
-        rootView.findViewById(R.id.create_audio_event).setOnClickListener(clickListener);
-        rootView.findViewById(R.id.create_text_event).setOnClickListener(clickListener);
         rootView.findViewById(R.id.create_measure_event).setOnClickListener(clickListener);
         rootView.findViewById(R.id.create_vaccine_event).setOnClickListener(clickListener);
 
@@ -77,41 +76,50 @@ public class AddEventFragment extends android.support.v4.app.Fragment {
         @Override
         public void onClick(final View view) {
             Animator unreveal = prepareUnrevealAnimator(0, 0);
-            unreveal.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    // remove the fragment only when the animation finishes
-                    getFragmentManager().beginTransaction().remove(AddEventFragment.this).commit();
-                    //to prevent flashing the fragment before removing it, execute pending transactions inmediately
-                    getFragmentManager().executePendingTransactions();
-                    if(view.getId()==R.id.create_photo_event){
-                        mListener.onPhotoEventClicked();
-                    } else if(view.getId()==R.id.create_video_event) {
-                        mListener.onVideoEventClicked();
-                    } else if(view.getId()==R.id.create_audio_event) {
-                        mListener.onAudioEventClicked();
-                    } else if(view.getId()==R.id.create_text_event) {
-                        mListener.onTextEventClicked();
-                    } else if(view.getId()==R.id.create_measure_event) {
-                        mListener.onMeasureEventClicked();
-                    } else if(view.getId()==R.id.create_vaccine_event) {
-                        mListener.onVaccineEventClicked();
+            if(unreveal!=null){
+                unreveal.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
                     }
-                }
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                }
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        // remove the fragment only when the animation finishes
+                        getFragmentManager().beginTransaction().remove(AddEventFragment.this).commit();
+                        //to prevent flashing the fragment before removing it, execute pending transactions inmediately
+                        getFragmentManager().executePendingTransactions();
+                        if(view.getId()==R.id.create_photo_event){
+                            mListener.onPhotoEventClicked();
+                        } else if(view.getId()==R.id.create_measure_event) {
+                            mListener.onMeasureEventClicked();
+                        } else if(view.getId()==R.id.create_vaccine_event) {
+                            mListener.onVaccineEventClicked();
+                        }
+                    }
 
-                @Override
-                public void onAnimationRepeat(Animator animation) {
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+                    }
+                });
+                unreveal.start();
+            } else {
+                // remove the fragment only when the animation finishes
+                getFragmentManager().beginTransaction().remove(AddEventFragment.this).commit();
+                //to prevent flashing the fragment before removing it, execute pending transactions inmediately
+                getFragmentManager().executePendingTransactions();
+                if(view.getId()==R.id.create_photo_event){
+                    mListener.onPhotoEventClicked();
+                } else if(view.getId()==R.id.create_measure_event) {
+                    mListener.onMeasureEventClicked();
+                } else if(view.getId()==R.id.create_vaccine_event) {
+                    mListener.onVaccineEventClicked();
                 }
-            });
-            unreveal.start();
+            }
+
         }
     };
 
@@ -168,9 +176,6 @@ public class AddEventFragment extends android.support.v4.app.Fragment {
 
     public interface AddEventFragmentListener{
         void onPhotoEventClicked();
-        void onVideoEventClicked();
-        void onAudioEventClicked();
-        void onTextEventClicked();
         void onMeasureEventClicked();
         void onVaccineEventClicked();
     }
