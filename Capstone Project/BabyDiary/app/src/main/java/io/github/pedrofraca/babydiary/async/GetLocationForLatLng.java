@@ -26,7 +26,7 @@ public class GetLocationForLatLng extends AsyncTask<Void,Void,Exception> {
 
     @Override
     protected Exception doInBackground(Void... voids) {
-        GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyBwwSO7aK9oaQsXO4sKky5x0naYONPu-l4");
+        GeoApiContext context = new GeoApiContext().setApiKey("AIza..");
         GeocodingResult[] results = new GeocodingResult[0];
         try {
             results = GeocodingApi.reverseGeocode(context,mLocation).await();
